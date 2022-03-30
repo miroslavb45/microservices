@@ -159,8 +159,10 @@ export class ClientRedis extends ClientProxy {
       const responseChannel = this.getReplyPattern(pattern);
       let subscriptionsCount =
         this.subscriptionsCount.get(responseChannel) || 0;
-      
-      this.logger.error('subscriptionsCount ' +  responseChannel + ':' + subscriptionsCount);
+
+      this.logger.error('subscriptionsCount ' + responseChannel + ':' + subscriptionsCount);
+      console.log(`subscriptionsCount ${responseChannel}: ${subscriptionsCount}`)
+
       const publishPacket = () => {
         subscriptionsCount = this.subscriptionsCount.get(responseChannel) || 0;
         this.subscriptionsCount.set(responseChannel, subscriptionsCount + 1);
@@ -175,6 +177,9 @@ export class ClientRedis extends ClientProxy {
         this.subClient.subscribe(
           responseChannel,
           (err: any) => {
+            console.error(`Subscription error: ${err}`)
+            console.error(err)
+
             this.logger.error('Subscription error');
             this.logger.error(err);
             !err && publishPacket();
